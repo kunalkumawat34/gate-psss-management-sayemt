@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Gate Pass | Acropolis</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: radial-gradient(circle at top left, #0f0c29, #302b63, #24243e);
+      overflow-x: hidden;
+    }
+
+    .glow-text {
+      text-shadow: 0 0 5px #00f0ff, 0 0 15px #00f0ff;
+    }
+
+    .neon-button {
+      background: linear-gradient(145deg, #00f0ff, #3f87ff);
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 10px;
+      font-weight: 600;
+      box-shadow: 0 0 15px #00f0ff;
+      transition: all 0.3s ease;
+    }
+
+    .neon-button:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 25px #00f0ff;
+    }
+
+    ::selection {
+      background: #00f0ff;
+      color: #000;
+    }
+  </style>
+</head>
+<body class="text-white p-6 min-h-screen flex items-center justify-center">
+
+  <div class="backdrop-blur-2xl bg-white/10 border border-white/20 rounded-3xl p-10 max-w-5xl w-full shadow-2xl space-y-8">
+    <div class="text-center">
+      <h1 class="text-5xl font-bold glow-text">🚀 Acropolis Institute</h1>
+      <p class="text-xl mt-2 text-blue-200 font-medium">Next-Gen Student Gate Pass System</p>
+    </div>
+
+    <form id="gatePassForm" class="space-y-6">
+      <input class="bg-white/10 p-4 rounded-xl border border-white/20 placeholder-white focus:outline-none w-full" type="text" id="studentName" placeholder="👨‍🎓 Student Name" required />
+      <input class="bg-white/10 p-4 rounded-xl border border-white/20 placeholder-white focus:outline-none w-full" type="text" id="enrollmentNumber" placeholder="🆔 Enrollment Number" required />
+      <input class="bg-white/10 p-4 rounded-xl border border-white/20 placeholder-white focus:outline-none w-full" type="number" id="mobileNumber" placeholder="📱 Mobile Number" required />
+      <input class="bg-white/10 p-4 rounded-xl border border-white/20 placeholder-white focus:outline-none w-full" type="email" id="Studentmail" placeholder="📧 Student Email ID" required />
+      <input class="bg-white/10 p-4 rounded-xl border border-white/20 placeholder-white focus:outline-none w-full" type="number" id="parentMobileNumber" placeholder="👨‍👩‍👧 Parent's Mobile Number" required />
+      <input class="bg-white/10 p-4 rounded-xl border border-white/20 placeholder-white focus:outline-none w-full" type="text" id="purpose" placeholder="✍️ Purpose of Leaving" required />
+      <input class="bg-white/10 p-4 rounded-xl border border-white/20 placeholder-white w-full" type="date" id="gatePassDate" readonly required />
+      <input class="bg-white/10 p-4 rounded-xl border border-white/20 placeholder-white w-full" type="time" id="gatePassTime" readonly required />
+      <div class="flex justify-center">
+        <button type="submit" class="neon-button w-full">🚪 Request Gate Pass</button>
+      </div>
+    </form>
+
+    <div>
+      <h2 class="text-3xl font-semibold text-center glow-text mt-8">📋 Issued Passes</h2>
+      <div class="overflow-x-auto mt-4 rounded-xl">
+        <table class="w-full text-sm text-white border-collapse">
+          <thead class="bg-blue-800 text-blue-100">
+            <tr>
+              <th class="p-3">Name</th>
+              <th class="p-3">Enrollment</th>
+              <th class="p-3">Mobile</th>
+              <th class="p-3">Email</th>
+              <th class="p-3">Purpose</th>
+              <th class="p-3">Date</th>
+              <th class="p-3">Time</th>
+              <th class="p-3">Action</th>
+            </tr>
+          </thead>
+          <tbody id="gatePassTable" class="text-center bg-white/10"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    emailjs.init("YOUR_USER_ID");
+
+    // Set default date and time
+    window.onload = () => {
+      const now = new Date();
+      const date = now.toISOString().split('T')[0];
+      const time = now.toTimeString().split(' ')[0].substring(0, 5);
+
+      document.getElementById('gatePassDate').value = date;
+      document.getElementById('gatePassTime').value = time;
+    };
+
+    document.getElementById('gatePassForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      const studentName = document.getElementById('studentName').value;
+      const enrollmentNumber = document.getElementById('enrollmentNumber').value;
+      const mobileNumber = document.getElementById('mobileNumber').value;
+      const Studentmail = document.getElementById('Studentmail').value;
+      const parentMobileNumber = document.getElementById('parentMobileNumber').value;
+      const purpose = document.getElementById('purpose').value;
+      const date = document.getElementById('gatePassDate').value;
+      const time = document.getElementById('gatePassTime').value;
+
+      emailjs.send("YOUR_SERVICE_ID", "YOUR_TEMPLATE_ID", {
+        student_name: studentName,
+        enrollment_number: enrollmentNumber,
+        student_email: Studentmail,
+        student_mobile: mobileNumber,
+        parent_mobile: parentMobileNumber,
+        purpose: purpose,
+        date: date,
+        time: time
+      }).then(() => {
+        alert("✅ Gate pass request sent to HOD.");
+      }, (error) => {
+        alert("❌ Failed to send email.");
+        console.error(error);
+      });
+
+      const table = document.getElementById('gatePassTable');
+      const newRow = document.createElement('tr');
+      newRow.classList.add("border-t", "border-white/10", "hover:bg-white/5");
+      newRow.innerHTML = `
+        <td class="p-2">${studentName}</td>
+        <td class="p-2">${enrollmentNumber}</td>
+        <td class="p-2">${mobileNumber}</td>
+        <td class="p-2">${Studentmail}</td>
+        <td class="p-2">${purpose}</td>
+        <td class="p-2">${date}</td>
+        <td class="p-2">${time}</td>
+        <td class="p-2"><button onclick="this.closest('tr').remove()" class="bg-red-500 hover:bg-red-600 px-3 py-1 rounded-lg">❌</button></td>
+      `;
+      table.appendChild(newRow);
+
+      document.getElementById('gatePassForm').reset();
+      document.getElementById('gatePassDate').value = date;  // Maintain default date
+      document.getElementById('gatePassTime').value = time;  // Maintain default time
+    });
+  </script>
+</body>
+</html>

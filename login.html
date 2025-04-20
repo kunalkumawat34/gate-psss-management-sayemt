@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Login | Student Gate Pass</title>
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <!-- Font Awesome for icons -->
+  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+
+  <style>
+    :root {
+      --main-glow: #00ffe7;
+      --accent-glow: #00d4ff;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Quicksand', sans-serif;
+      background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+    }
+
+    .login-box {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 20px;
+      padding: 50px 40px;
+      max-width: 400px;
+      width: 100%;
+      box-shadow: 0 0 30px rgba(0, 255, 255, 0.15);
+      backdrop-filter: blur(20px);
+      position: relative;
+      animation: fadeIn 1s ease forwards;
+    }
+
+    @keyframes fadeIn {
+      0% {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .login-box::before {
+      content: '';
+      position: absolute;
+      top: -80px;
+      left: -80px;
+      width: 200px;
+      height: 200px;
+      background: radial-gradient(circle, var(--main-glow), transparent);
+      z-index: -1;
+      filter: blur(70px);
+      opacity: 0.6;
+    }
+
+    .login-box h2 {
+      text-align: center;
+      color: #fff;
+      margin-bottom: 30px;
+      font-weight: 700;
+    }
+
+    .form-group {
+      margin-bottom: 25px;
+      position: relative;
+    }
+
+    .form-group label {
+      display: block;
+      color: #ddd;
+      font-size: 14px;
+      margin-bottom: 6px;
+    }
+
+    .form-group input {
+      width: 100%;
+      padding: 12px 15px 12px 45px;
+      border-radius: 12px;
+      border: none;
+      background: rgba(255, 255, 255, 0.15);
+      color: #fff;
+      font-size: 16px;
+      transition: all 0.3s ease;
+    }
+
+    .form-group input:focus {
+      outline: none;
+      background: rgba(255, 255, 255, 0.2);
+      box-shadow: 0 0 10px var(--accent-glow);
+    }
+
+    .form-group i {
+      position: absolute;
+      top: 50%;
+      left: 15px;
+      transform: translateY(-50%);
+      color: #ccc;
+      font-size: 16px;
+    }
+
+    .error-message {
+      display: none;
+      background-color: rgba(255, 0, 0, 0.1);
+      color: #ffdddd;
+      padding: 10px;
+      margin-bottom: 15px;
+      border-radius: 8px;
+      font-size: 14px;
+      text-align: center;
+    }
+
+    .login-btn {
+      width: 100%;
+      background: linear-gradient(to right, #00f2fe, #4facfe);
+      padding: 14px;
+      font-size: 16px;
+      font-weight: bold;
+      color: #fff;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
+      transition: transform 0.2s ease, box-shadow 0.3s ease;
+    }
+
+    .login-btn:hover {
+      transform: scale(1.03);
+      box-shadow: 0 0 25px var(--main-glow);
+    }
+
+    .register-link {
+      text-align: center;
+      margin-top: 25px;
+      color: #ccc;
+      font-size: 14px;
+    }
+
+    .register-link a {
+      color: #00f2fe;
+      font-weight: bold;
+      text-decoration: none;
+    }
+
+    .register-link a:hover {
+      text-decoration: underline;
+    }
+
+  </style>
+</head>
+<body>
+
+  <div class="login-box">
+    <h2>Welcome Back 👋</h2>
+
+    <form id="loginForm">
+      <div class="form-group">
+        <label for="username">Username</label>
+        <i class="fas fa-user"></i>
+        <input type="text" id="username" placeholder="Enter your username" required />
+      </div>
+
+      <div class="form-group">
+        <label for="password">Password</label>
+        <i class="fas fa-lock"></i>
+        <input type="password" id="password" placeholder="Enter your password" required />
+      </div>
+
+      <div class="error-message" id="errorMsg">⚠️ Invalid username or password</div>
+
+      <button type="submit" class="login-btn">Login</button>
+    </form>
+
+    <div class="register-link">
+      Don't have an account? <a href="register.html">Create one</a>
+    </div>
+  </div>
+
+  <script>
+    // Check login session
+    if (sessionStorage.getItem('loggedIn')) {
+      window.location.href = 'gatepass.html';
+    }
+
+    document.getElementById('loginForm').addEventListener('submit', function (e) {
+      e.preventDefault();
+
+      const username = document.getElementById('username').value.trim();
+      const password = document.getElementById('password').value.trim();
+      const errorMsg = document.getElementById('errorMsg');
+
+      const users = JSON.parse(localStorage.getItem('users')) || {};
+
+      if (users[username] && users[username] === password) {
+        sessionStorage.setItem('loggedIn', 'true');
+        localStorage.setItem('loggedInUsername', username);
+        window.location.href = 'gatepass.html';
+      } else {
+        errorMsg.style.display = 'block';
+      }
+    });
+  </script>
+
+</body>
+</html>
