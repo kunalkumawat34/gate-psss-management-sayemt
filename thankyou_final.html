@@ -1,0 +1,125 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Thank You</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+<style>
+  body {
+    background: radial-gradient(circle at top left, #0f0c29, #302b63, #24243e);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+  .glow-text {
+    text-shadow: 0 0 5px #00f0ff, 0 0 15px #00f0ff;
+  }
+  .neon-button {
+    background: linear-gradient(145deg, #00f0ff, #3f87ff);
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 10px;
+    font-weight: 600;
+    box-shadow: 0 0 15px #00f0ff;
+    transition: all 0.3s ease;
+  }
+  .neon-button:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 25px #00f0ff;
+  }
+</style>
+
+<style>
+    body {
+      background: radial-gradient(circle at top left, #0f0c29, #302b63, #24243e);
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .glow-text {
+      text-shadow: 0 0 5px #00f0ff, 0 0 15px #00f0ff;
+    }
+
+    ::selection {
+      background: #00f0ff;
+      color: #000;
+    }
+  </style>
+</head>
+<body class="text-white p-10 min-h-screen space-y-12">
+  <div class="text-center">
+    <h1 class="text-4xl font-bold glow-text">✅ Gate Pass Submitted</h1>
+    <p class="text-lg text-blue-200 mt-2">Your request has been recorded.</p>
+  </div>
+
+  <div class="backdrop-blur-2xl bg-white/10 border border-white/20 rounded-3xl p-6 max-w-3xl mx-auto shadow-2xl">
+    <h2 class="text-2xl font-semibold glow-text mb-4 text-center">📝 Your Request Summary</h2>
+    <div id="studentSummary" class="space-y-2 text-lg text-white"></div>
+  </div>
+
+  <div class="backdrop-blur-2xl bg-white/10 border border-white/20 rounded-3xl p-6 max-w-6xl mx-auto shadow-2xl">
+    <h2 class="text-2xl font-semibold glow-text mb-4 text-center">📋 All Submitted Requests</h2>
+    <div class="overflow-x-auto rounded-xl">
+      <table class="w-full text-sm text-white border-collapse">
+        <thead class="bg-blue-800 text-blue-100">
+          <tr>
+            <th class="p-3">Name</th>
+            <th class="p-3">Enrollment</th>
+            <th class="p-3">Mobile</th>
+            <th class="p-3">Email</th>
+            <th class="p-3">Purpose</th>
+            <th class="p-3">Date</th>
+            <th class="p-3">Time</th>
+          </tr>
+        </thead>
+        <tbody id="allRequests" class="bg-white/10 text-center"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <script>
+    const student = JSON.parse(localStorage.getItem("selectedStudent") || "{}");
+    const all = JSON.parse(localStorage.getItem("gatePasses") || "[]");
+
+    const studentSummary = document.getElementById("studentSummary");
+    if (!student["Student Name"]) {
+      studentSummary.innerHTML = "<p class='text-red-400'>❌ No request found.</p>";
+    } else {
+      studentSummary.innerHTML = `
+        <p><strong>👨‍🎓 Name:</strong> <span class="text-cyan-300 underline cursor-pointer" onclick="viewProfile()">${student["Student Name"]}</span></p>
+        <p><strong>🆔 Enrollment:</strong> ${student["Enrollment Number"]}</p>
+        <p><strong>📱 Mobile:</strong> ${student["Mobile Number"]}</p>
+        <p><strong>📧 Email:</strong> ${student["Student Email"]}</p>
+        <p><strong>👨‍👩‍👧 Parent Mobile:</strong> ${student["Parent Mobile Number"]}</p>
+        <p><strong>✍️ Purpose:</strong> ${student["Purpose"]}</p>
+        <p><strong>📅 Date:</strong> ${student["Date"]}</p>
+        <p><strong>⏰ Time:</strong> ${student["Time"]}</p>
+      `;
+    }
+
+    function viewProfile() {
+      window.open("profile_final.html", "_blank");
+    }
+
+    const allRequests = document.getElementById("allRequests");
+    if (all.length === 0) {
+      allRequests.innerHTML = "<tr><td class='p-2 text-red-300' colspan='7'>No previous requests found.</td></tr>";
+    } else {
+      all.forEach(entry => {
+        allRequests.innerHTML += `
+          <tr>
+            <td class="p-2">${entry["Student Name"]}</td>
+            <td class="p-2">${entry["Enrollment Number"]}</td>
+            <td class="p-2">${entry["Mobile Number"]}</td>
+            <td class="p-2">${entry["Student Email"]}</td>
+            <td class="p-2">${entry["Purpose"]}</td>
+            <td class="p-2">${entry["Date"]}</td>
+            <td class="p-2">${entry["Time"]}</td>
+          </tr>
+        `;
+      });
+    }
+  </script>
+</body>
+</html>

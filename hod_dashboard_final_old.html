@@ -1,0 +1,100 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>HOD Dashboard</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+<style>
+  body {
+    background: radial-gradient(circle at top left, #0f0c29, #302b63, #24243e);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+  .glow-text {
+    text-shadow: 0 0 5px #00f0ff, 0 0 15px #00f0ff;
+  }
+  .neon-button {
+    background: linear-gradient(145deg, #00f0ff, #3f87ff);
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 10px;
+    font-weight: 600;
+    box-shadow: 0 0 15px #00f0ff;
+    transition: all 0.3s ease;
+  }
+  .neon-button:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 25px #00f0ff;
+  }
+</style>
+
+<style>
+    body {
+      background: radial-gradient(circle at top left, #0f0c29, #302b63, #24243e);
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+  </style>
+</head>
+<body class="text-white p-10 min-h-screen space-y-12">
+  <h1 class="text-4xl font-bold text-center glow-text">📋 Student Requests</h1>
+
+  <div class="overflow-x-auto rounded-xl">
+    <table class="w-full text-sm text-white border-collapse">
+      <thead class="bg-blue-800 text-blue-100">
+        <tr>
+          <th class="p-3">Name</th>
+          <th class="p-3">Enrollment</th>
+          <th class="p-3">Email</th>
+          <th class="p-3">Mobile</th>
+          <th class="p-3">Purpose</th>
+          <th class="p-3">Date</th>
+          <th class="p-3">Time</th>
+          <th class="p-3">Status</th>
+          <th class="p-3">Action</th>
+        </tr>
+      </thead>
+      <tbody id="requestTable" class="bg-white/10 text-center"></tbody>
+    </table>
+  </div>
+
+  <script>
+    const passes = JSON.parse(localStorage.getItem("gatePasses") || "[]");
+    const requestTable = document.getElementById("requestTable");
+
+    if (passes.length === 0) {
+      requestTable.innerHTML = "<tr><td class='p-3 text-red-300' colspan='9'>No requests available.</td></tr>";
+    } else {
+      passes.forEach((entry, index) => {
+        const status = entry.Status || "⏳ Pending";
+        requestTable.innerHTML += `
+          <tr>
+            <td class="p-2">\${entry["Student Name"]}</td>
+            <td class="p-2">\${entry["Enrollment Number"]}</td>
+            <td class="p-2">\${entry["Student Email"]}</td>
+            <td class="p-2">\${entry["Mobile Number"]}</td>
+            <td class="p-2">\${entry["Purpose"]}</td>
+            <td class="p-2">\${entry["Date"]}</td>
+            <td class="p-2">\${entry["Time"]}</td>
+            <td class="p-2 font-semibold">\${status}</td>
+            <td class="p-2 space-x-2">
+              <button onclick="updateStatus(\${index}, '✅ Approved')" class="px-3 py-1 rounded bg-green-500 hover:bg-green-600 text-white">Accept</button>
+              <button onclick="updateStatus(\${index}, '❌ Rejected')" class="px-3 py-1 rounded bg-red-500 hover:bg-red-600 text-white">Reject</button>
+            </td>
+          </tr>`
+          ;
+      });
+    }
+
+    function updateStatus(index, status) {
+      const passes = JSON.parse(localStorage.getItem("gatePasses") || "[]");
+      passes[index]["Status"] = status;
+      localStorage.setItem("gatePasses", JSON.stringify(passes));
+      alert("Status updated to " + status);
+      location.reload();
+    }
+  </script>
+</body>
+</html>

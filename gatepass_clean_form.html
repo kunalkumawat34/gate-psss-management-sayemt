@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Gate Pass | Acropolis</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      background: radial-gradient(circle at top left, #0f0c29, #302b63, #24243e);
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    .glow-text {
+      text-shadow: 0 0 5px #00f0ff, 0 0 15px #00f0ff;
+    }
+    .neon-button {
+      background: linear-gradient(145deg, #00f0ff, #3f87ff);
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 10px;
+      font-weight: 600;
+      box-shadow: 0 0 15px #00f0ff;
+      transition: all 0.3s ease;
+    }
+    .neon-button:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 25px #00f0ff;
+    }
+    ::selection {
+      background: #00f0ff;
+      color: #000;
+    }
+  </style>
+</head>
+<body class="text-white p-6 min-h-screen flex items-center justify-center">
+  <div class="backdrop-blur-2xl bg-white/10 border border-white/20 rounded-3xl p-10 max-w-6xl w-full shadow-2xl space-y-8">
+    <div class="text-center">
+      <h1 class="text-5xl font-bold glow-text">🚀 Acropolis Institute</h1>
+      <p class="text-xl mt-2 text-blue-200 font-medium">Next-Gen Student Gate Pass System</p>
+    </div>
+
+    <!-- Gate Pass Form -->
+    <form id="gatePassForm" class="space-y-6">
+      <!-- Hidden Email Settings (optional for FormSubmit) -->
+      <input type="hidden" name="_captcha" value="false">
+      <input type="hidden" name="_template" value="table">
+      <input type="hidden" name="_subject" value="🚪 New Gate Pass Request">
+
+      <!-- Student Inputs -->
+      <input class="bg-white/10 p-4 rounded-xl border border-white/20 placeholder-white w-full" type="text" name="Student Name" placeholder="👨‍🎓 Student Name" required />
+      <input class="bg-white/10 p-4 rounded-xl border border-white/20 placeholder-white w-full" type="text" name="Enrollment Number" placeholder="🆔 Enrollment Number" required />
+      <input class="bg-white/10 p-4 rounded-xl border border-white/20 placeholder-white w-full" type="number" name="Mobile Number" placeholder="📱 Mobile Number" required />
+      <input class="bg-white/10 p-4 rounded-xl border border-white/20 placeholder-white w-full" type="email" name="Student Email" placeholder="📧 Student Email ID" required />
+      <input class="bg-white/10 p-4 rounded-xl border border-white/20 placeholder-white w-full" type="number" name="Parent Mobile Number" placeholder="👨‍👩‍👧 Parent's Mobile Number" required />
+      <input class="bg-white/10 p-4 rounded-xl border border-white/20 placeholder-white w-full" type="text" name="Purpose" placeholder="✍️ Purpose of Leaving" required />
+      <input class="bg-white/10 p-4 rounded-xl border border-white/20 placeholder-white w-full" type="date" name="Date" id="gatePassDate" readonly required />
+      <input class="bg-white/10 p-4 rounded-xl border border-white/20 placeholder-white w-full" type="time" name="Time" id="gatePassTime" readonly required />
+
+      <!-- 👤 Photo Upload -->
+      <input type="file" accept="image/*" id="photoInput" class="bg-white/10 p-4 rounded-xl border border-white/20 text-white file:bg-blue-700 file:text-white file:border-none file:px-4 file:py-2 file:rounded-lg file:cursor-pointer"/>
+
+      <!-- Submit -->
+      <div class="flex justify-center">
+        <button type="submit" class="neon-button w-full">🚪 Request Gate Pass</button>
+      </div>
+    </form>
+  </div>
+
+  <!-- JavaScript -->
+  <script>
+
+
+window.onload = () => {
+  const now = new Date();
+  document.getElementById('gatePassDate').value = now.toISOString().split('T')[0];
+  document.getElementById('gatePassTime').value = now.toTimeString().split(' ')[0].substring(0, 5);
+};
+
+function uploadToCloudinary(file) {
+  const formData = new FormData();
+  formData.append("file", file);
+  formData.append("upload_preset", "gatepass_upload"); // ✅ Tumhara Upload Preset
+  formData.append("cloud_name", "dzoi4tqfu"); // ✅ Tumhara Cloudinary cloud name
+
+  return fetch("https://api.cloudinary.com/v1_1/dzoi4tqfu/image/upload", {
+    method: "POST",
+    body: formData
+  })
+  .then(res => res.json())
+  .then(data => data.secure_url);
+}
+
+document.getElementById("gatePassForm").addEventListener("submit", function (e) {
+  e.preventDefault();
+
+  const form = e.target;
+  const formData = new FormData(form);
+  const data = Object.fromEntries(formData.entries());
+
+  const photoFile = document.getElementById("photoInput").files[0];
+  if (photoFile) {
+    uploadToCloudinary(photoFile).then(photoURL => {
+      data["Photo"] = photoURL;
+      formData.append("Photo", `<img src="${photoURL}" style="width:100px; height:100px; border-radius:10px;">`);
+      proceed(data, formData);
+    });
+  } else {
+    data["Photo"] = "";
+    proceed(data, formData);
+  }
+});
+
+function proceed(data, formData) {
+  // Save to localStorage
+  const allPasses = JSON.parse(localStorage.getItem("gatePasses") || "[]");
+  allPasses.push(data);
+  localStorage.setItem("gatePasses", JSON.stringify(allPasses));
+  localStorage.setItem("selectedStudent", JSON.stringify(data));
+
+  // ✅ Send email using FormSubmit
+  fetch("https://formsubmit.co/ajax/kunalkumawat808@gmail.com", {
+    method: "POST",
+    headers: { 'Accept': 'application/json' },
+    body: formData
+  })
+  .then(() => {
+    window.location.href = "thankyou_final.html";
+  })
+  .catch(err => {
+    alert("❌ Failed to send email.");
+    console.error(err);
+  });
+}
+</script>
+
+
+</body>
+</html>

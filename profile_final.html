@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Student Profile</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+<style>
+  body {
+    background: radial-gradient(circle at top left, #0f0c29, #302b63, #24243e);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+  .glow-text {
+    text-shadow: 0 0 5px #00f0ff, 0 0 15px #00f0ff;
+  }
+  .neon-button {
+    background: linear-gradient(145deg, #00f0ff, #3f87ff);
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 10px;
+    font-weight: 600;
+    box-shadow: 0 0 15px #00f0ff;
+    transition: all 0.3s ease;
+  }
+  .neon-button:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 25px #00f0ff;
+  }
+</style>
+
+<style>
+    body {
+      background: radial-gradient(circle at top left, #0f0c29, #302b63, #24243e);
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+  </style>
+</head>
+<body class="text-white p-10 min-h-screen flex justify-center items-center">
+  <div class="backdrop-blur-2xl bg-white/10 border border-white/20 rounded-3xl p-10 max-w-2xl w-full shadow-2xl space-y-6">
+    <h1 class="text-4xl font-bold text-center glow-text text-cyan-300">👤 Student Gate Pass</h1>
+    <div id="studentProfile" class="space-y-2 text-lg"></div>
+  </div>
+
+  <script>
+    const data = JSON.parse(localStorage.getItem("selectedStudent") || "{}");
+    const container = document.getElementById("studentProfile");
+    if (!data["Student Name"]) {
+      container.innerHTML = "<p class='text-red-400'>⚠️ No data found. Please select from the main page.</p>";
+    } else {
+      container.innerHTML = `
+       <p><strong>🖼️ Photo:</strong><br><img src="${data["Photo"]}" alt="Student Photo" class="mt-2 w-32 h-32 object-cover rounded-xl border border-white/30"/></p>
+        <p><strong>👨‍🎓 Name:</strong> ${data["Student Name"]}</p>
+        <p><strong>🆔 Enrollment Number:</strong> ${data["Enrollment Number"]}</p>
+        <p><strong>📱 Mobile Number:</strong> ${data["Mobile Number"]}</p>
+        <p><strong>📧 Email:</strong> ${data["Student Email"]}</p>
+        <p><strong>👨‍👩‍👧 Parent Mobile:</strong> ${data["Parent Mobile Number"]}</p>
+        <p><strong>✍️ Purpose:</strong> ${data["Purpose"]}</p>
+        <p><strong>📅 Date:</strong> ${data["Date"]}</p>
+        <p><strong>⏰ Time:</strong> ${data["Time"]}</p>
+
+      `;
+    }
+  </script>
+</body>
+</html>

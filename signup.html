@@ -1,0 +1,85 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Create Account | Gate Pass</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+<style>
+  body {
+    background: radial-gradient(circle at top left, #0f0c29, #302b63, #24243e);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+  .glow-text {
+    text-shadow: 0 0 5px #00f0ff, 0 0 15px #00f0ff;
+  }
+  .neon-button {
+    background: linear-gradient(145deg, #00f0ff, #3f87ff);
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 10px;
+    font-weight: 600;
+    box-shadow: 0 0 15px #00f0ff;
+    transition: all 0.3s ease;
+  }
+  .neon-button:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 25px #00f0ff;
+  }
+</style>
+
+<style>
+    body {
+      background: radial-gradient(circle at top left, #0f0c29, #302b63, #24243e);
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+  </style>
+</head>
+
+<body class="text-white flex items-center justify-center min-h-screen p-6">
+  <div class="bg-white/10 backdrop-blur-lg p-10 rounded-3xl shadow-2xl w-full max-w-md space-y-6 border border-white/20">
+    <h2 class="text-3xl font-bold text-center glow-text">📝 Create Account</h2>
+    <form id="signupForm" class="space-y-4">
+      <input type="text" id="fullName" placeholder="👤 Full Name" required class="w-full p-3 rounded-xl bg-white/10 text-white border border-white/20 placeholder-white focus:outline-none"/>
+      <input type="text" id="enrollment" placeholder="🆔 Enrollment / ID" required class="w-full p-3 rounded-xl bg-white/10 text-white border border-white/20 placeholder-white focus:outline-none"/>
+      <input type="email" id="email" placeholder="📧 Email" required class="w-full p-3 rounded-xl bg-white/10 text-white border border-white/20 placeholder-white focus:outline-none"/>
+      <input type="password" id="password" placeholder="🔑 Password" required class="w-full p-3 rounded-xl bg-white/10 text-white border border-white/20 placeholder-white focus:outline-none"/>
+      <button type="submit" class="neon-button w-full">Register</button>
+    </form>
+    <p class="text-center text-white text-sm mt-4">
+      Already have an account? 
+      <a href="login.html" class="text-cyan-300 hover:underline">Go back to login</a>
+    </p>
+  </div>
+
+  <!-- 👇🏻 Yaha pe script daalo -->
+  <script>
+    document.getElementById("signupForm").addEventListener("submit", function(e) {
+      e.preventDefault();
+
+      const student = {
+        name: document.getElementById("fullName").value.trim(),
+        enrollment: document.getElementById("enrollment").value.trim(),
+        email: document.getElementById("email").value.trim(),
+        password: document.getElementById("password").value.trim()
+      };
+
+      let students = JSON.parse(localStorage.getItem("students") || "[]");
+      const exists = students.some(s => s.enrollment === student.enrollment || s.email === student.email);
+
+      if (exists) {
+        alert("⚠️ Student already registered.");
+      } else {
+        students.push(student);
+        localStorage.setItem("students", JSON.stringify(students));
+        alert("✅ Registered successfully! Now login.");
+        window.location.href = "login.html";
+      }
+    });
+  </script>
+</body>
+
+</html>
