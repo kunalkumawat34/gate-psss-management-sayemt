@@ -1,1 +1,0 @@
-# gate-psss-management-sayemt
